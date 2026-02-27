@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Ro'yxatdan o'tish - Sport Bron{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <!-- Sarlavha -->
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-success"><i class="fas fa-user-plus me-2"></i>Yangi hisob ochish</h2>
+                <p class="text-muted lead">Bir necha soniyada ro'yxatdan o'ting va sport zallarini bron qiling</p>
+            </div>
+
+            <!-- Forma -->
+            <div class="card shadow-lg border-0 overflow-hidden">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h4 class="mb-0">Ro'yxatdan o'tish</h4>
+                </div>
+
+                <div class="card-body p-5">
+                    <!-- Umumiy xato xabarlari -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="row g-4">
+                            <!-- Ism -->
+                            <div class="col-md-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2 text-success"></i>Ism
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Familiya -->
+                            <div class="col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2 text-success"></i>Familiya
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-12">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-envelope me-2 text-success"></i>Email
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">Bu manzil tizimda asosiy identifikator bo'ladi</small>
+                            </div>
+
+                            <!-- Username -->
+                            <div class="col-12">
+                                <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user-tag me-2 text-success"></i>Username (ixtiyoriy)
+                                </label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Parol -->
+                            <div class="col-md-6">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-lock me-2 text-success"></i>Parol
+                                </label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password1.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Parol tasdiqlash -->
+                            <div class="col-md-6">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-lock me-2 text-success"></i>Parolni tasdiqlang
+                                </label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password2.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Saqlash tugmasi -->
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-success btn-lg px-5 py-3 fw-bold">
+                                <i class="fas fa-user-plus me-2"></i>Hisob yaratish
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Login taklifi -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted">
+                            Hisobingiz allaqachon bormi?
+                            <a href="{% url 'login' %}" class="text-success fw-bold text-decoration-none">
+                                Tizimga kiring
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

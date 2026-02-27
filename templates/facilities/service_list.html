@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Mavjud xizmatlar va zallar</h2>
+    <!-- Saralash bo'limi -->
+    <div class="mb-4 d-flex flex-wrap gap-3 justify-content-left">
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Saralash: {% if current_sort == 'facility' %}Facility bo'yicha{% elif current_sort == 'price_asc' %}Arzon → Qimmat{% elif current_sort == 'price_desc' %}Qimmat → Arzon{% elif current_sort == 'capacity' %}Sig'im bo'yicha{% else %}Nom bo'yicha{% endif %}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item {% if current_sort == 'name' %}active{% endif %}" href="?sort=name">Nom bo'yicha (A-Z)</a></li>
+                <li><a class="dropdown-item {% if current_sort == 'facility' %}active{% endif %}" href="?sort=facility">Inshootlar bo'yicha</a></li>
+                <li><a class="dropdown-item {% if current_sort == 'price_asc' %}active{% endif %}" href="?sort=price_asc">Narx: Arzon → Qimmat</a></li>
+                <li><a class="dropdown-item {% if current_sort == 'price_desc' %}active{% endif %}" href="?sort=price_desc">Narx: Qimmat → Arzon</a></li>
+                <li><a class="dropdown-item {% if current_sort == 'capacity' %}active{% endif %}" href="?sort=capacity">Sig'im: Katta → Kichik</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for service in services %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if service.image %}
+                    <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="https://via.placeholder.com/400x200?text=Rasm+yo'q" class="card-img-top" alt="Placeholder">
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ service.name }}</h5>
+                    <p class="card-text text-muted">{{ service.facility.name }} • {{ service.facility.location }}</p>
+                    <p class="card-text">
+                        <strong>Narx:</strong> {{ service.price_per_hour }} so'm/soat<br>
+                        <strong>Sig'im:</strong> {{ service.capacity }} kishi
+                    </p>
+                    {% if service.is_exclusive %}
+                        <span class="badge bg-danger">Exclusive</span>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer bg-transparent border-0">
+                   <a href="{% url 'facilities:service_detail' service.id %}" class="btn btn-primary w-100">
+                        Batafsil va bron qilish
+                   </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <h4>Hozircha xizmatlar mavjud emas</h4>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

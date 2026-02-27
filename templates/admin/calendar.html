@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Kalendar - {{ month_name }}{% endblock %}
+
+{% block content %}
+<!-- STYLE -->
+<style>
+.calendar-header {
+    background: linear-gradient(135deg, #4e73df, #1cc88a);
+    color: white;
+}
+.calendar-day {
+    border-radius: 16px;
+    transition: all 0.25s ease;
+    min-height: 110px;
+}
+
+/* Hover effekt */
+.calendar-day:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* 🔵 Bugungi kun */
+.today {
+    background: #0ea5e9;
+    color: white !important;
+}
+
+/* 🟢 Ko‘p bron */
+.high {
+    background: #22c55e;
+    color: white;
+}
+
+/* 🟡 Kam bron */
+.medium {
+    background: #facc15;
+}
+
+/* ⚪ Bo‘sh */
+.empty {
+    background: #f1f5f9;
+}
+</style>
+<div class="container my-5">
+
+    <!-- Header -->
+    <div class="calendar-header text-center mb-4 p-4 rounded-4 shadow-sm">
+        <h2 class="fw-bold mb-1">{{ month_name }}</h2>
+        <p class="text-muted mb-0">Bronlar monitoring paneli</p>
+    </div>
+
+    <!-- Oy almashish -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="?year={{ prev_month|slice:":4" }}&month={{ prev_month|slice:"5:" }}"
+           class="btn btn-light shadow-sm px-4 rounded-pill">
+            ← Oldingi
+        </a>
+
+        <h4 class="fw-semibold text-primary mb-0">{{ month_name }}</h4>
+
+        <a href="?year={{ next_month|slice:":4" }}&month={{ next_month|slice:"5:" }}"
+           class="btn btn-light shadow-sm px-4 rounded-pill">
+            Keyingi →
+        </a>
+    </div>
+
+    <!-- Haftalar nomi -->
+    <div class="card border-0 shadow-sm rounded-4 mb-3">
+        <div class="card-body py-2">
+            <div class="row text-center fw-semibold text-secondary small">
+                <div class="col">Du</div>
+                <div class="col">Se</div>
+                <div class="col">Ch</div>
+                <div class="col">Pa</div>
+                <div class="col">Ju</div>
+                <div class="col text-danger">Sh</div>
+                <div class="col text-danger">Ya</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kalendar -->
+    {% for week in weeks %}
+    <div class="row g-3 mb-3">
+        {% for day in week %}
+        <div class="col">
+            <div class="calendar-day card h-100 text-center p-2 border-0 shadow-sm
+                {% if day.is_today %} today
+                {% elif day.count > 5 %} high
+                {% elif day.count > 0 %} medium
+                {% else %} empty {% endif %}">
+
+                <div class="card-body p-2 d-flex flex-column justify-content-between">
+                    <div>
+                        <h6 class="fw-bold mb-0">{{ day.date|date:"d" }}</h6>
+                        <small class="text-muted">{{ day.date|date:"D" }}</small>
+                    </div>
+
+                    {% if day.count > 0 %}
+                        <button class="btn btn-sm btn-outline-primary mt-2 rounded-pill view-day"
+                                data-date="{{ day.date|date:'Y-m-d' }}">
+                            {{ day.count }} ta bron
+                        </button>
+                    {% else %}
+                        <small class="text-muted mt-2">Bo‘sh</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">
+                    Bronlar - <span id="modalDate"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+document.querySelectorAll('.view-day').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const date = this.getAttribute('data-date');
+        document.getElementById('modalDate').textContent = date;
+
+        fetch(`/dashboard/calendar/day/${date}/`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('modalBody').innerHTML = html;
+                new bootstrap.Modal(document.getElementById('bookingModal')).show();
+            });
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ service.name }} - Sport Bron{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    /* 1. Navbar ustiga chiqib ketishni oldini olish */
+    .sticky-form {
+        position: sticky;
+        top: 100px; /* Navbar balandligidan ko'proq masofa */
+        z-index: 10; /* Navbar z-index'i (1030+) dan doim kichik bo'lishi kerak */
+    }
+
+    /* 2. Dizayn elementlari */
+    .service-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+    .service-image-wrapper img {
+        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .service-image-wrapper:hover img {
+        transform: scale(1.03);
+    }
+
+    .feature-box {
+        background: #fff;
+        border-radius: 18px;
+        padding: 20px;
+        border: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
+    }
+    .feature-box:hover {
+        border-color: #0d6efd;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+
+    .badge-exclusive {
+        position: absolute;
+        top: 25px;
+        left: 25px;
+        z-index: 5;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 700;
+        background: rgba(220, 53, 69, 0.95);
+        color: white;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Xarita uchun maxsus stil */
+    .map-container {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border: 1px solid #eee;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row g-lg-5">
+
+        <div class="col-lg-7">
+            <div class="service-image-wrapper mb-5">
+                {% if service.is_exclusive %}
+                    <div class="badge-exclusive">
+                        <i class="fas fa-crown me-2"></i>EXCLUSIVE
+                    </div>
+                {% endif %}
+
+                {% if service.image %}
+                    <img src="{{ service.image.url }}" class="img-fluid w-100" alt="{{ service.name }}" style="min-height: 400px; max-height: 600px; object-fit: cover;">
+                {% else %}
+                    <img src="https://via.placeholder.com/800x500?text=Rasm+yo'q" class="img-fluid w-100" alt="Placeholder">
+                {% endif %}
+            </div>
+
+            <div class="mb-5">
+                <h3 class="fw-bold mb-4 border-start border-primary border-4 ps-3">Xizmat haqida</h3>
+                <div class="p-4 bg-white rounded-4 shadow-sm border border-light">
+                    <p class="lead text-dark mb-0" style="line-height: 1.8; font-size: 1.1rem;">
+                        {{ service.facility.description|default:"Ushbu majmua haqida batafsil ma'lumot kiritilmagan." }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-5">
+                <div class="col-md-4 col-6">
+                    <div class="text-center p-3 border rounded-4 bg-white shadow-sm">
+                        <i class="fas fa-wifi text-primary fs-4 mb-2"></i>
+                        <div class="small fw-bold">Bepul Wi-Fi</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="text-center p-3 border rounded-4 bg-white shadow-sm">
+                        <i class="fas fa-parking text-primary fs-4 mb-2"></i>
+                        <div class="small fw-bold">Avtoturargoh</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="text-center p-3 border rounded-4 bg-white shadow-sm">
+                        <i class="fas fa-shower text-primary fs-4 mb-2"></i>
+                        <div class="small fw-bold">Dush xonasi</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if service.facility.map_url %}
+            <div class="mb-5">
+                <h4 class="fw-bold mb-3"><i class="fas fa-map-marked-alt me-2 text-danger"></i>Joylashuv</h4>
+                <div class="map-container shadow-sm">
+                    <div class="ratio ratio-21x9">
+                        <iframe
+                            src="{{ service.facility.map_url }}"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-5">
+            <div class="sticky-form">
+
+                <div class="mb-4">
+                    <h1 class="fw-bold text-dark h2">{{ service.name }}</h1>
+                    <p class="text-muted d-flex align-items-center">
+                        <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                        {{ service.facility.name }} • {{ service.facility.location }}
+                    </p>
+                </div>
+
+                <div class="row g-3 mb-4 text-center">
+                    <div class="col-6">
+                        <div class="feature-box">
+                            <i class="fas fa-tag fa-2x text-success mb-2"></i>
+                            <div class="text-muted small">Narxi</div>
+                            <div class="fw-bold fs-5 text-dark">{{ service.price_per_hour }} <span class="fs-6 fw-normal">so'm</span></div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="feature-box">
+                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                            <div class="text-muted small">Sig'im</div>
+                            <div class="fw-bold fs-5 text-dark">{{ service.capacity }} <span class="fs-6 fw-normal">kishi</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                        <div class="card-header bg-primary text-white py-3 border-0">
+                            <h5 class="mb-0 text-center fw-bold"><i class="far fa-calendar-check me-2"></i>Bron qilish</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                                {% for field in form %}
+                                    <div class="mb-3 custom-form-group">
+                                        <label class="form-label small fw-bold text-secondary">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <div class="text-danger small mt-1">
+                                                <i class="fas fa-exclamation-circle me-1"></i>{{ field.errors|first }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                                <button type="submit" class="btn btn-primary btn-lg w-100 mt-3 rounded-pill fw-bold py-3 shadow-sm border-0">
+                                    Tasdiqlash
+                                </button>
+                            </form>
+                            <div class="text-center mt-3">
+                                <span class="badge bg-light text-muted fw-normal p-2 border">
+                                    <i class="fas fa-shield-alt me-1 text-success"></i> Xavfsiz bron tizimi
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card border-0 shadow-sm rounded-4 bg-white text-center p-5">
+                        <div class="mb-3">
+                            <div class="p-3 bg-light rounded-circle d-inline-block">
+                                <i class="fas fa-lock fa-2x text-muted"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold">Tizimga kiring</h5>
+                        <p class="text-muted small mb-4">Bron qilish uchun avval hisobingizga kirishingiz shart.</p>
+                        <a href="{% url 'login' %}" class="btn btn-primary rounded-pill px-5 py-2 fw-bold w-100">Kirish</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const fields = document.querySelectorAll('input, select, textarea');
+        fields.forEach(f => {
+            f.classList.add('form-control');
+            f.classList.add('border-light-subtle');
+            f.classList.add('shadow-none');
+        });
+    });
+</script>
+{% endblock %}

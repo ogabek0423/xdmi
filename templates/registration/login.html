@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Kirish - Sport Bron{% endblock %}
+
+{% block content %}
+<style>
+    /* Input maydonlarini yanada chiroyli qilish uchun maxsus CSS */
+    .custom-input input {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .custom-input input:focus {
+        border-color: #0d6efd;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(13, 110, 253, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .card {
+        border-radius: 20px;
+    }
+
+    .btn-primary {
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+
+    .input-group-text {
+        background: transparent;
+        border: none;
+        padding-left: 0;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+
+            <div class="text-center mb-4">
+                <div class="mb-3 d-inline-block p-3 rounded-circle bg-light shadow-sm">
+                    <i class="fas fa-user-lock fa-3x text-primary"></i>
+                </div>
+                <h2 class="fw-bold">Xush kelibsiz!</h2>
+                <p class="text-muted small">Tizimga kiring va sport mashg'ulotlarini rejalashtiring</p>
+            </div>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4 p-md-5">
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger py-2 small">
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-4 custom-input">
+                            <label class="form-label small fw-bold text-secondary">
+                                <i class="fas fa-at me-1"></i> Foydalanuvchi nomi yoki Email
+                            </label>
+                            <div class="field-wrapper">
+                                {{ form.username }}
+                            </div>
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ form.username.errors|first }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4 custom-input">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label small fw-bold text-secondary">
+                                    <i class="fas fa-key me-1"></i> Parol
+                                </label>
+                                <a href="{% url 'password_reset' %}" class="small text-primary text-decoration-none">Unutdingizmi?</a>
+                            </div>
+                            <div class="field-wrapper">
+                                {{ form.password }}
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ form.password.errors|first }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input type="checkbox" class="form-check-input shadow-none" id="remember_me">
+                            <label class="form-check-label small text-muted" for="remember_me">Meni eslab qol</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm py-3 mt-2">
+                            Kirish <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <span class="text-muted small">Hali ro'yxatdan o'tmaganmisiz?</span>
+                        <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none small ms-1">Hisob ochish</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="/" class="text-muted text-decoration-none small">
+                    <i class="fas fa-chevron-left me-1"></i> Bosh sahifaga qaytish
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    /* Django form elementlariga Bootstrap klassini dinamik qo'shish (agar forms.py da berilmagan bo'lsa) */
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputs = document.querySelectorAll('input[type="text"], input[type="password"], input[type="email"]');
+        inputs.forEach(input => {
+            input.classList.add('form-control');
+            input.classList.add('shadow-none');
+            // Placeholder qo'shish (ixtiyoriy)
+            if(input.name === 'username') input.placeholder = 'Loginni kiriting...';
+            if(input.name === 'password') input.placeholder = '********';
+        });
+    });
+</script>
+{% endblock %}

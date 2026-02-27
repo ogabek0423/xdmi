@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Profil - {{ user.email }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Profil kartasi -->
+    <div class="card shadow-lg border-0 mb-5">
+        <div class="card-header bg-primary text-white text-center py-4">
+            <h3 class="mb-0">Mening profilim</h3>
+        </div>
+        <div class="card-body p-4">
+            <div class="row text-center text-md-start">
+                <div class="col-md-4 mb-3">
+                    <strong><i class="fas fa-user me-2 text-primary"></i>Ism:</strong><br>
+                    <span class="fs-5">{{ user.first_name|default:"Belgilanmagan" }}</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <strong><i class="fas fa-user me-2 text-primary"></i>Familiya:</strong><br>
+                    <span class="fs-5">{{ user.last_name|default:"Belgilanmagan" }}</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <strong><i class="fas fa-envelope me-2 text-primary"></i>Email:</strong><br>
+                    <span class="fs-5">{{ user.email }}</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <strong><i class="fas fa-user-tag me-2 text-primary"></i>Username:</strong><br>
+                    <span class="fs-5">{{ user.username|default:"Belgilanmagan" }}</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <strong><i class="fas fa-calendar-check me-2 text-primary"></i>Ro'yxatdan o'tgan sana:</strong><br>
+                    <span class="fs-5">{{ user.date_joined|date:"d.m.Y H:i" }}</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <strong><i class="fas fa-shield-alt me-2 text-primary"></i>Status:</strong><br>
+                    {% if blocked_until_local and blocked_until_local > now %}
+                        <span class="badge bg-danger fs-6">
+                            Bloklangan ({{ blocked_until_local|date:"d.m.Y H:i" }} gacha)
+                        </span>
+                    {% else %}
+                        <span class="badge bg-success fs-6">Faol</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-lg px-5">
+                    Ma'lumotlarni o'zgartirish
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mening bronlarim bo'limi (oldingi kodni saqlab qoldim) -->
+    <h4 class="mb-4 text-center">Mening bronlarim</h4>
+
+    {% if bookings %}
+    <div class="table-responsive">
+        <table class="table table-hover table-striped shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Xizmat</th>
+                    <th>Sana / Vaqt</th>
+                    <th>Status</th>
+                    <th>Narx</th>
+                    <th>Amal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.service.name }} <small class="text-muted">({{ booking.service.facility.name }})</small></td>
+                    <td>{{ booking.start_time|date:"d.m.Y H:i" }} - {{ booking.end_time|date:"H:i" }}</td>
+                    <td>
+                        {% if booking.status == "pending" %}<span class="badge bg-warning">Kutilmoqda</span>{% endif %}
+                        {% if booking.status == "in_progress" %}<span class="badge bg-info">Jarayonda</span>{% endif %}
+                        {% if booking.status == "completed" %}<span class="badge bg-success">Tugallangan</span>{% endif %}
+                        {% if booking.status == "cancelled" %}<span class="badge bg-secondary">Bekor qilingan</span>{% endif %}
+                        {% if booking.status == "not_attended" %}<span class="badge bg-danger">Qatnashmagan</span>{% endif %}
+                    </td>
+                    <td>{{ booking.total_price }} so'm</td>
+                    <td>
+                        {% if booking.can_cancel %}
+                            <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Bronni bekor qilmoqchimisiz?')">
+                                Bekor qilish
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <h5>Hozircha bronlar yo'q</h5>
+        <a href="{% url 'facilities:service_list' %}" class="btn btn-primary mt-3">Xizmatlarni ko'rish</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
