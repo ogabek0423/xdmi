@@ -40,7 +40,7 @@ class Booking(models.Model):
     def clean(self):
         now = timezone.now()
 
-        if not self.pk:  # agar yangi bo‘lsa
+        if not self.pk:
             if self.user.blocked_until and self.user.blocked_until > now:
                 raise ValidationError(
                     f"Siz bloklangansiz. Bron qila olmaysiz. Blok muddati: {self.user.blocked_until.strftime('%Y-%m-%d %H:%M')} gacha")
@@ -58,7 +58,7 @@ class Booking(models.Model):
         if duration_hours < 0.5:
             raise ValidationError("Minimal bron vaqti 30 daqiqa bo‘lishi kerak.")
 
-        # Exclusive tekshiruvi
+
         if self.service.is_exclusive:
             conflict = Booking.objects.filter(
                 service=self.service,
@@ -98,7 +98,7 @@ class Booking(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
 
-        # duration_hours ni Decimal qilish (xavfsizlik uchun)
+
         duration_seconds = (self.end_time - self.start_time).total_seconds()
         duration_hours = Decimal(duration_seconds) / Decimal(3600)
 
@@ -112,22 +112,21 @@ class Booking(models.Model):
     def can_cancel(self):
         now = timezone.now()
         if now >= self.start_time:
-            return False  # allaqachon boshlangan yoki o‘tgan
+            return False
 
         time_left = self.start_time - now
         hours_left = time_left.total_seconds() / 3600
 
-        if hours_left >= 48:                    # 2 sutka va undan ko‘p
+        if hours_left >= 48:
             return True
-        elif 24 <= hours_left < 48:             # oxirgi 24 soat ichida
-            return hours_left >= 26             # kamida 2 soat oldin
-        elif 0 < hours_left < 24:               # o‘sha kuni
-            return hours_left >= 1              # kamida 1 soat oldin
+        elif 24 <= hours_left < 48:
+            return hours_left >= 26
+        elif 0 < hours_left < 24:
+            return hours_left >= 1
         return False
 
     # ================== Not attended ==================
     def can_mark_not_attended(self):
-        """Admin qo‘lda 'not attended' belgilashi mumkinmi?"""
         if self.status != "in_progress":
             return False
 

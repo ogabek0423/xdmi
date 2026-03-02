@@ -5,7 +5,7 @@ class Facility(models.Model):
     location = models.CharField(max_length=255)
     description = models.TextField()
 
-    # Yangi maydon
+
     map_url = models.URLField(
         max_length=500,
         blank=True,
@@ -14,7 +14,7 @@ class Facility(models.Model):
         help_text="Google Mapsdan joyni ulashgan linkni bu yerga qo‘ying"
     )
 
-    # yoki koordinatalar bilan ishlash uchun (keyinchalik kengaytirish mumkin)
+
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
 
@@ -29,7 +29,7 @@ class Service(models.Model):
     capacity = models.IntegerField()
     is_exclusive = models.BooleanField(default=False)
 
-    # Yangi maydon
+
     image = models.ImageField(
         upload_to='services/',
         null=True,

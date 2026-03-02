@@ -23,14 +23,14 @@ def admin_calendar(request):
     year = int(request.GET.get('year', today.year))
     month = int(request.GET.get('month', today.month))
 
-    # Oy boshlanishi va tugashi
+
     first_day = datetime(year, month, 1).date()
     if month == 12:
         last_day = datetime(year + 1, 1, 1).date() - timedelta(days=1)
     else:
         last_day = datetime(year, month + 1, 1).date() - timedelta(days=1)
 
-    # Har bir kun uchun bron sonini hisoblash
+
     calendar_data = []
     current = first_day
     while current <= last_day:
@@ -110,7 +110,7 @@ def admin_calendar_day(request, date_str):
 
 
 def home(request):
-    # Eng mashhur / yangi 6 ta xizmatni olish (masalan bron soni bo'yicha)
+    # Eng mashhur / yangi 6 ta xizmatni olish
     popular_services = Service.objects.select_related('facility').annotate(
         booking_count=Count('booking')
     ).order_by('-booking_count')[:6]
@@ -125,10 +125,10 @@ def home(request):
 def create_booking(request):
     if request.user.blocked_until and request.user.blocked_until > timezone.now():
         messages.error(request, f"Siz bloklangansiz. Blok {request.user.blocked_until.strftime('%Y-%m-%d %H:%M')} gacha davom etadi.")
-        return redirect("profile")  # yoki "home"
-        # Alternativ: return HttpResponseForbidden("Siz bloklangansiz")
+        return redirect("profile")
 
-    # agar blok bo‘lmasa → davom etadi
+
+
     if request.method == "POST":
         form = BookingForm(request.POST, user=request.user)
         if form.is_valid():
@@ -170,7 +170,7 @@ def dashboard_view(request):
 
     today = timezone.now().date()
 
-    # 🔹 Bugungi statistikalar
+
     today_bookings = Booking.objects.filter(
         start_time__date=today
     ).count()
@@ -180,7 +180,7 @@ def dashboard_view(request):
         status__in=["completed"]
     ).aggregate(total=Sum("total_price"))["total"] or 0
 
-    # 🔹 7 kunlik tushum
+
     last_7_days = []
     last_7_revenue = []
     last_7_bookings = []
@@ -201,13 +201,13 @@ def dashboard_view(request):
         last_7_revenue.append(float(revenue))
         last_7_bookings.append(bookings_count)
 
-    # 🔹 Status statistikasi
+
     status_stats = Booking.objects.values("status").annotate(total=Count("id"))
 
     status_labels = [s["status"] for s in status_stats]
     status_counts = [s["total"] for s in status_stats]
 
-    # 🔹 Eng ko‘p bron qilingan service
+
     top_services = Booking.objects.values("service__name").annotate(
         total=Count("id")
     ).order_by("-total")[:5]
@@ -215,7 +215,7 @@ def dashboard_view(request):
     service_labels = [s["service__name"] for s in top_services]
     service_counts = [s["total"] for s in top_services]
 
-    # 🔹 Service kesimida tushum
+
     revenue_by_service = Booking.objects.filter(
         status__in=["completed", "in_progress"]
     ).values("service__name").annotate(
@@ -225,7 +225,7 @@ def dashboard_view(request):
     revenue_service_labels = [r["service__name"] for r in revenue_by_service]
     revenue_service_values = [float(r["total"]) for r in revenue_by_service]
 
-    # 🔹 Occupancy rate
+
     total_services = Service.objects.count()
     active_bookings = Booking.objects.filter(
         status__in=["pending", "in_progress"]

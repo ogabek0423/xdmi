@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pe=z7y0)h@(*h(t3#=4c2)^02w1or9h+6=$6mdrv7k!5m^ifu3'
+SECRET_KEY = 'django-insecure-und@*l%k!b$30-cj63xfhm_d((0d20e-56g04u#$!%(^hg86fz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,20 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'users',
-    # 'bookings',
     'facilities',
     'bookings.apps.BookingsConfig',
     "django.contrib.sites",
-    # "allauth",
-    # "allauth.account",
-    # "allauth.socialaccount",
 ]
 
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    # "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 LOGIN_REDIRECT_URL = "/"
@@ -72,10 +67,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 ROOT_URLCONF = 'sport_booking.urls'
@@ -148,7 +141,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-STATICFILES_DIRS = [BASE_DIR / 'static']  # agar static papkangiz bo‘lsa
+STATICFILES_DIRS = [BASE_DIR / 'static']
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -180,12 +173,12 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
         {
             "name": "Asosiy sayt",
-            "url": "/",   # agar dashboard root da bo‘lsa
+            "url": "/",
             "new_window": False,
         },
         {
             "name": "Statistika Dashboard",
-            "url": "/dashboard/",  # sizning dashboard url
+            "url": "/dashboard/",
             "new_window": False,
         },
     ],

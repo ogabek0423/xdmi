@@ -15,13 +15,13 @@ def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)  # commit=False — hali saqlamaymiz
-            raw_password = form.cleaned_data.get('password1')  # yoki 'password2'
-            user.set_password(raw_password)  # ← eng muhim qator! Xeshlaydi
-            user.save()  # endi saqlaymiz (xeshlangan holda)
+            user = form.save(commit=False)
+            raw_password = form.cleaned_data.get('password1')
+            user.set_password(raw_password)
+            user.save()
 
-            login(request, user)  # avto login
-            return redirect("home")  # yoki "profile" / "dashboard"
+            login(request, user)
+            return redirect("home")
     else:
         form = CustomUserCreationForm()
 
@@ -53,7 +53,7 @@ def edit_profile(request):
 
 @login_required
 def profile(request):
-    # Foydalanuvchining barcha bronlari (eng yangisidan boshlab)
+
     bookings = Booking.objects.filter(
         user=request.user
     ).select_related('service__facility').order_by('-start_time')
@@ -61,8 +61,8 @@ def profile(request):
     context = {
         'user': request.user,
         'blocked_until_local': timezone.localtime(request.user.blocked_until) if request.user.blocked_until else None,
-        'bookings': bookings,                    # ← eng muhim qator!
-        'now': timezone.now(),                   # bekor qilish muddati uchun kerak
+        'bookings': bookings,
+        'now': timezone.now(),
     }
     return render(request, "profile.html", context)
 

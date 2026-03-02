@@ -13,8 +13,7 @@ from django.db.models import Q
 def service_list(request):
     services = Service.objects.select_related('facility').all()
 
-    # Saralash parametrini olish
-    sort = request.GET.get('sort', 'name')  # default: nom bo'yicha
+    sort = request.GET.get('sort', 'name')
 
     if sort == 'facility':
         services = services.order_by('facility__name')
@@ -30,7 +29,7 @@ def service_list(request):
     context = {
         'services': services,
         'title': 'Mavjud xizmatlar',
-        'current_sort': sort,  # hozirgi saralashni saqlash uchun
+        'current_sort': sort,
     }
     return render(request, 'facilities/service_list.html', context)
 
@@ -55,7 +54,7 @@ def service_detail(request, service_id):
             return redirect("profile")
 
         else:
-            # Faqat bitta sikl yetarli
+
             for error in form.errors.values():
                 for e in error:
                     messages.error(request, e)
@@ -68,30 +67,3 @@ def service_detail(request, service_id):
         'form': form,
         'title': f"{service.name} - Bron qilish"
     })
-#
-# @login_required
-# def facility_list(request):
-#     """
-#     Agar keyinchalik facility bo'yicha filtr yoki ro'yxat kerak bo'lsa
-#     (hozircha oddiy variant)
-#     """
-#     facilities = Facility.objects.all().order_by('name')
-#
-#     context = {
-#         'facilities': facilities,
-#         'title': 'Barcha sport zallari va joylar',
-#     }
-#     return render(request, 'facilities/facility_list.html', context)
-#
-#
-# # Agar kerak bo'lsa — facility detail sahifasi (masalan /facilities/1/)
-# def facility_detail(request, facility_id):
-#     facility = get_object_or_404(Facility, pk=facility_id)
-#     services = facility.service_set.all().order_by('name')
-#
-#     context = {
-#         'facility': facility,
-#         'services': services,
-#         'title': f"{facility.name} - Batafsil",
-#     }
-#     return render(request, 'facilities/facility_detail.html', context)

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-# Profil o'zgartirish formasi (oldingi)
+
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
@@ -18,7 +18,7 @@ class ProfileUpdateForm(forms.ModelForm):
         }
 
 
-# Parol o'zgartirish formasi (Django'dan tayyor olamiz)
+
 class CustomPasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,13 +45,13 @@ class CustomUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Maydonlarni chiroyli qilish uchun class qo'shamiz
+
         self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Email manzilingiz'})
         self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Username (ixtiyoriy)'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Parol'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Parolni tasdiqlang'})
 
-        # Username ixtiyoriy
+
         self.fields["username"].required = False
         self.fields["username"].help_text = "Ixtiyoriy: keyinroq o‘zgartirish mumkin"
 
