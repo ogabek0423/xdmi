@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+
+  web:
+    build: .
+    restart: always
+    env_file: .env
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn sport_booking.wsgi:application
+               --bind 0.0.0.0:8000
+               --workers 3
+               --timeout 120"
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - static_files:/app/staticfiles
+      - media_files:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  celery:
+    build: .
+    restart: always
+    env_file: .env
+    command: celery -A sport_booking worker --loglevel=info
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    restart: always
+    env_file: .env
+    command: celery -A sport_booking beat --loglevel=info
+    depends_on:
+      - redis
+
+volumes:
+  static_files:
+  media_files:
