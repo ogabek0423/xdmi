@@ -19,7 +19,7 @@ django-unfold==0.80.2
 # TO'G'RILANDI: "django-rest-framework==0.1.0" o'chirib tashlandi!
 djangorestframework==3.16.1
 
-kombu==5.6.2
+kombu==5.5.2
 packaging==26.0
 pillow==12.1.1
 prompt_toolkit==3.0.52
