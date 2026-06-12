@@ -9,11 +9,16 @@ click-repl==0.3.0
 colorama==0.4.6
 Django==5.2.11
 django-allauth==65.14.3
+
+# DIQQAT: Admin panellaridan faqat bittasini qoldirish tavsiya etiladi.
+# Agar baribir hammasi kerak bo'lsa, qolsin, lekin django-rest-framework (0.1.0) aniq o'chishi shart.
 django-jazzmin==3.0.3
 django-jet-reboot==1.3.10
-django-rest-framework==0.1.0
 django-unfold==0.80.2
+
+# TO'G'RILANDI: "django-rest-framework==0.1.0" o'chirib tashlandi!
 djangorestframework==3.16.1
+
 kombu==5.6.2
 packaging==26.0
 pillow==12.1.1
